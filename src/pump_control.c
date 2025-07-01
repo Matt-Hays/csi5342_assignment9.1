@@ -11,7 +11,7 @@ static uint32_t delivered_ul = 0;
 // Integer conversion of volume
 static inline uint32_t ul_from_ms(uint16_t ml_per_hr, uint32_t ms)
 {
-    return (ml_per_hr * ms * 1000UL) / 3600000UL;
+    return (uint32_t) (( (uint64_t) ml_per_hr * ms * 1000ULL) / 3600000ULL);
 }
 
 void pump_init(void)
