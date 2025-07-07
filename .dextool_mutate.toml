@@ -1,0 +1,53 @@
+###############################################################################
+#  Dextool – Mutation-testing config
+#  Project root:  ~/Documents/coursework/csi5342_assignment9.1
+###############################################################################
+
+# ──────────────────────────── Where to mutate ────────────────────────────────
+[workarea]
+root    = "."
+include = ["src/**"]                # mutate only production code
+exclude = ["build/**", "test/**"]   # ignore generated artifacts & Unity/CMock
+
+# ───────────────────────────── Static analysis ───────────────────────────────
+[analyze]
+include = ["src/**", "test/**"]     # still analyse hand-written tests
+exclude = ["build/**"]
+prune   = true
+
+# mark hand-written test files so “TC suggestion” report works
+[tests]
+paths = ["test/**"]
+
+# ───────────────────────── Compile database discovery ────────────────────────
+[compile_commands]
+# File is produced once with:  bear -- ceedling clobber test:all
+search_paths = ["./compile_commands.json"]
+
+# ─────────────────── Build the SUT and run test binaries ─────────────────────
+[mutant_test]
+# ❶  Re-compile SUT + tests; Ceedling’s “clobber” guarantees a clean build
+build_cmd = ["ceedling clobber test:all"]
+
+# ❷  Let Dextool execute the compiled tests directly (.out files)
+test_cmd_dir        = ["build/test/out"]
+test_cmd_dir_search = "recursive"
+
+# Concurrency and misc runtime knobs
+parallel_test     = 4          # omit = “all logical CPUs”
+use_early_stop    = true       # stop a test run as soon as one case fails
+continues_check_test_suite        = true
+continues_check_test_suite_period = 100
+
+analyze_using_builtin = ["test_cmd"]
+
+# ────────────────── Mutant operator set & reporting style ────────────────────
+[generic]
+mutants = ["lcr", "uoi", "aor"]      # start small, add more later
+
+[report]
+style    = "html"
+sections = ["summary", "alive", "killed", "mut_stat", "tc_suggestion"]
+
+[database]
+db = "dextool_mutate.sqlite3"

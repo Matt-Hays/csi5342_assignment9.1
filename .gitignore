@@ -1,2 +1,6 @@
 build/
 .idea/
+coverage*
+dextool_mutate.sqlite3
+html/**
+compile_commands.json
