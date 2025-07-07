@@ -11,9 +11,13 @@ static uint32_t delivered_ul = 0;
 // Integer conversion of volume
 static inline uint32_t ul_from_ms(uint16_t ml_per_hr, uint32_t ms)
 {
-    return (uint32_t) (( (uint64_t) ml_per_hr * ms * 1000ULL) / 3600000ULL);
+    return (uint32_t)(((uint64_t)ml_per_hr * ms * 1000ULL) / 3600000ULL);
 }
 
+/**
+ * @brief Brings the pump online, sets its state to IDLE and ensures the motor is off.
+ *
+ */
 void pump_init(void)
 {
     state = STATE_IDLE;
@@ -26,6 +30,12 @@ pump_state_t pump_get_state(void) { return state; }
 uint16_t pump_get_rate(void) { return rate_ml_hr; }
 uint32_t pump_get_delivered_ul(void) { return delivered_ul; }
 
+/**
+ * @brief Adjust the delivery rate of the pump in ml/hr.
+ *
+ * @param ml_per_hr The desired volume delivery amount.
+ * @return pump_error_t The pump status on completion.
+ */
 pump_error_t pump_set_rate(uint16_t ml_per_hr)
 {
     if (ml_per_hr < MIN_RATE_ML_HR || ml_per_hr > MAX_RATE_ML_HR)
@@ -39,6 +49,11 @@ pump_error_t pump_set_rate(uint16_t ml_per_hr)
     return PUMP_OK;
 }
 
+/**
+ * @brief Set the pump status to INFUSING, set the desired volume delivery rate, and turn the motor on.
+ *
+ * @return pump_error_t The pump's status on completion.
+ */
 pump_error_t pump_start(void)
 {
     if (state != STATE_IDLE || rate_ml_hr == 0)
@@ -51,6 +66,11 @@ pump_error_t pump_start(void)
     return PUMP_OK;
 }
 
+/**
+ * @brief Set the pump's status to PAUSED and turn off the motor.
+ *
+ * @return pump_error_t
+ */
 pump_error_t pump_pause(void)
 {
     if (state != STATE_INFUSING)
@@ -61,6 +81,11 @@ pump_error_t pump_pause(void)
     return PUMP_OK;
 }
 
+/**
+ * @brief Set the pump status to INFUSING from PAUSED and turn the motor on.
+ *
+ * @return pump_error_t The pump status.
+ */
 pump_error_t pump_resume(void)
 {
     if (state != STATE_PAUSED)
@@ -71,6 +96,11 @@ pump_error_t pump_resume(void)
     return PUMP_OK;
 }
 
+/**
+ * @brief Set the pump's status to STOPPED and turn the motor off.
+ *
+ * @return pump_error_t The pump's status.
+ */
 pump_error_t pump_stop(void)
 {
     if (state == STATE_IDLE)
@@ -80,6 +110,11 @@ pump_error_t pump_stop(void)
     return PUMP_OK;
 }
 
+/**
+ * @brief Allows for a "tick" fuction to be based on some external, centralized clock to control scheduling.
+ *
+ * @param ms The tick rate (time passed since last tick).
+ */
 void pump_tick_ms(uint32_t ms)
 {
     if (state == STATE_INFUSING && rate_ml_hr)

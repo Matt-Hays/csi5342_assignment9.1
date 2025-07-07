@@ -1,3 +1,9 @@
+/**
+ * @file pump_hardware.h
+ * @brief Header file for test mock creation of the hardware interface.
+ * @date 2025-07-07
+ *
+ */
 #ifndef PUMP_HARDWARE_H
 #define PUMP_HARDWARE_H
 #include <stdint.h>
