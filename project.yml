@@ -240,8 +240,8 @@
     #- ReportGenerator # Use ReportGenerator to create the specified reports.
   :reports: # Specify one or more reports to generate.
     # Make an HTML summary report.
-    - HtmlBasic
-    # - HtmlDetailed
+    # - HtmlBasic
+    - HtmlDetailed
     # - Text
     # - Cobertura
     # - SonarQube
@@ -263,6 +263,7 @@
   :gcovr:
     # :html_artifact_filename: TestCoverageReport.html
     # :html_title: Test Coverage Report
+    :html_details: true
     :html_medium_threshold: 75
     :html_high_threshold: 90
     # :html_absolute_paths: TRUE
